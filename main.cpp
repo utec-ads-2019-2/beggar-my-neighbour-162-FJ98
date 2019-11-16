@@ -1,8 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-
 const int NUMBER_OF_CARDS = 52;
+
 std::string dealCards(deque<char>& player, deque<char>& dealer);
 void printWinner(int winner, int numberOfCards);
 
@@ -10,44 +10,20 @@ int nextPlayerTurn(int turn);
 void playerTakesAllTheCardsInTheTable(int last_face, deque<char> p[2], deque<char>& deck);
 
 char putACardOnTheTable(int turn, deque<char> p[2], deque<char>& theCasinoTable);
+int playBeggarMyNeighbour(deque<char> *players);
 
 int main() {
-    map<char, int> faceCards;
-    faceCards['A'] = 4;
-    faceCards['K'] = 3;
-    faceCards['Q'] = 2;
-    faceCards['J'] = 1;
-    while(true) {
+    while(true)
+    {
         deque<char> players[2]; // players[0] is player, players[1] is dealer
 
         auto dealCard = dealCards(players[0], players[1]);
         if (dealCard == "#") { break; }
 
-        deque<char> theCasinoTable; int turn = 1;
-        int last_face = -1; int cover_count = 0;
-        while (!players[turn].empty())
-        {
-            auto card = putACardOnTheTable(turn, players, theCasinoTable);
+        auto turn = playBeggarMyNeighbour(players);
 
-            if (faceCards.find(card) != faceCards.end()) {
-                last_face = turn;
-                cover_count = faceCards[card] + 1;
-                turn = nextPlayerTurn(turn);
-            }
-
-            if (cover_count) {
-                --cover_count;
-                if (!cover_count) {
-                    playerTakesAllTheCardsInTheTable(last_face, players, theCasinoTable);
-                    turn = last_face;
-                }
-            } else {
-                turn = nextPlayerTurn(turn);
-            }
-        }
         auto winner = nextPlayerTurn(turn);
         printWinner( winner, static_cast<int>( players[winner].size() ) );
-
     }
     return 0;
 }
@@ -83,4 +59,35 @@ char putACardOnTheTable(int turn, deque<char> *p, deque<char> &theCasinoTable) {
     p[turn].pop_front();
     theCasinoTable.push_front(card);
     return card;
+}
+
+int playBeggarMyNeighbour(deque<char> *players) {
+    map<char, int> faceCards;
+    faceCards['A'] = 4;
+    faceCards['K'] = 3;
+    faceCards['Q'] = 2;
+    faceCards['J'] = 1;
+    deque<char> theCasinoTable; int turn = 1;
+    int last_face = -1; int cover_count = 0;
+    while (!players[turn].empty())
+    {
+        auto card = putACardOnTheTable(turn, players, theCasinoTable);
+
+        if (faceCards.find(card) != faceCards.end()) {
+            last_face = turn;
+            cover_count = faceCards[card] + 1;
+            turn = nextPlayerTurn(turn);
+        }
+
+        if (cover_count) {
+            --cover_count;
+            if (!cover_count) {
+                playerTakesAllTheCardsInTheTable(last_face, players, theCasinoTable);
+                turn = last_face;
+            }
+        } else {
+            turn = nextPlayerTurn(turn);
+        }
+    }
+    return turn;
 }

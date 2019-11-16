@@ -26,5 +26,5 @@
  *
  * Output
  * Output will consist of a series of lines, one for each deck in the input. Each line will consist of the
- * number of the winning player (1 is the dealer, 2 is the first to play) and the number of cards in the
+ * number of the winning player (1 is the dealer, 2 is the first to playBeggarMyNeighbour) and the number of cards in the
  * winner’s hand (ignoring any on the stack), right justified in dealCards field of width 3. */
